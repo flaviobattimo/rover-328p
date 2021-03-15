@@ -47,7 +47,3 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-
-.pio/
-.vscode/*
-!.vscode/extensions.json
