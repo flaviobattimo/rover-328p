@@ -264,6 +264,7 @@ void loop()
             Motor* m = motors;
             for (uint8_t i=0;i<6;i++){
                 int16_t v = massageInbound.nextInt();
+                uint8_t oldDir = m->direction;
                 if (v<0){
                     m->desiredSpeed = -v;
                     m->direction = 1;
@@ -271,6 +272,11 @@ void loop()
                 else{
                     m->desiredSpeed = v;
                     m->direction = 0;
+                }
+                if (oldDir!=m->direction){
+                    //reset pid
+                    m->pid->SetMode(MANUAL);
+                    m->pid->SetMode(AUTOMATIC);
                 }
 
                 m++;
@@ -387,6 +393,9 @@ void loop()
                     if (m->desiredSpeed == 0.0f){
                         //fast stop!
                         m->calculatedPwm = 0;
+                        //reset pid
+                        m->pid->SetMode(MANUAL);
+                        m->pid->SetMode(AUTOMATIC);
                     }
 #if USE_FAST_START
                     else if (m->actualSpeed == 0.0f && m->stopped){
